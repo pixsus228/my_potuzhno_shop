@@ -1,0 +1,24 @@
+# --- Рівні 1–2: ядро Django + PostgreSQL ---
+Django>=6.0,<6.1           # остання стабільна (вимагає Python 3.12+)
+psycopg[binary]>=3.2        # драйвер PostgreSQL (psycopg 3)
+python-dotenv>=1.0          # читання змінних із .env
+Pillow>=11.0                # робота з ImageField (постери, аватари)
+
+# --- Рівень 16+: REST API (Django REST Framework) ---
+# djangorestframework>=3.17
+
+# --- Рівень 18: JWT-аутентифікація ---
+# djangorestframework-simplejwt>=5.3
+
+# --- Рівень 19: фільтрація в API ---
+# django-filter>=24.0
+
+# --- Рівень 22: тестування ---
+# pytest>=8.0
+# pytest-django>=4.9
+
+# --- Рівень 23: документація API ---
+# drf-spectacular>=0.28      # Swagger / OpenAPI
+
+# --- Рівні 24–25: GraphQL ---
+# graphene-django>=3.2
