@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: potuzhno_shop
+      POSTGRES_USER: potuzhno_shop
+      POSTGRES_PASSWORD: potuzhno_shop
+    ports:
+      - "5433:5432"
