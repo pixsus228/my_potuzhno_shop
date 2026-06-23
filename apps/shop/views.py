@@ -1,37 +1,15 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, Http404
+from django.views.generic import ListView, DetailView, TemplateView
+from .models import Product
 
-# Create your views here.
-PRODUCTS = [
-    {"id": 1, "name": "Худі Oversize", "brand": "ПОТУЖНО", "price": 1290, "sizes": ["S", "M", "L"]},
-    {"id": 2, "name": "Кросівки Runner", "brand": "Nova", "price": 2490, "sizes": ["40", "41", "42"]},
-    {"id": 3, "name": "Футболка Basic", "brand": "ПОТУЖНО", "price": 590, "sizes": ["XS", "S", "M", "L"]},
-    {"id": 4, "name": "Футболка Basic", "brand": "ПОТУЖНО", "price": 590, "sizes": ["XS", "S", "M", "L"]},
-]
+class HomeView(TemplateView):
+    template_name = 'shop/home.html'
 
-def home(request: HttpRequest):
-    return HttpResponse("<b>Привіт, це магазин Potuzhno Shop</b><br /><p><a href='/products/'>До каталогу</a></p>")
+class ProductListView(ListView):
+    model = Product
+    template_name = 'shop/product_list.html'
+    context_object_name = 'products'
 
-
-def product_list(request: HttpRequest):
-    response = ""
-    for product in PRODUCTS:
-        response += f"<li><a href=\"/products/{product['id']}\">{product['name']}</a></li>\n"
-
-    return HttpResponse(f"<ul>{response}</ul>")
-
-
-def product_detail(request: HttpRequest, pk: int):
-    product = next((p for p in PRODUCTS if p['id'] == pk), None)
-
-    if product is None:
-        raise Http404()
-        # return render(request, '404.html')
-
-    return HttpResponse(
-        f"<h1>{product['name']}</h1>"
-        f"<p>Бренд: {product['brand']}</p>"
-        f"<p>Ціна: {product['price']} грн</p>"
-        f"<p>Розміри: {', '.join(product['sizes'])}</p>"
-        f'<p><a href="/products/">← до каталогу</a></p>'
-    )
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'shop/product_detail.html'
+    context_object_name = 'product'
