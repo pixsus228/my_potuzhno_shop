@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-gray-800 border border-gray-700 rounded-2xl p-8 shadow-2xl">
+    <h1 class="text-3xl font-black text-white mb-6">Оформлення замовлення ⚡</h1>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-1">Повне ім'я</label>
+            <input type="text" name="full_name" placeholder="Максим Потужний" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-amber-400 focus:outline-none" required>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-1">Адреса доставки</label>
+            <input type="text" name="address" placeholder="м. Київ, вул. Хрещатик, 1" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-amber-400 focus:outline-none" required>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-1">Номер телефону</label>
+            <input type="text" name="phone" placeholder="+380991112233" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-amber-400 focus:outline-none" required>
+        </div>
+        <div class="pt-4 border-t border-gray-700 flex justify-between items-center">
+            <span class="text-xl font-bold text-gray-300">Сума: <span class="text-amber-400">{{ total_price }} ₴</span></span>
+            <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold px-6 py-3 rounded-lg transition shadow">Перейти до оплати</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
