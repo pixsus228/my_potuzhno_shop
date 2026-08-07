@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Потужний Shop ⚡</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="{% url 'shop:product_list' %}" class="text-2xl font-black tracking-wider flex items-center gap-2">
+                <span class="bg-amber-500 text-slate-950 px-2.5 py-1 rounded-xl shadow-lg">⚡</span>
+                <span class="text-white">ПОТУЖНО</span><span class="text-amber-400">SHOP</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-8 font-medium">
+                <a href="{% url 'shop:product_list' %}" class="hover:text-amber-400 transition">Каталог</a>
+                <a href="{% url 'cart:cart_detail' %}" class="hover:text-amber-400 transition flex items-center gap-1.5">
+                    🛒 Кошик
+                </a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:profile' %}" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-xl font-semibold transition flex items-center gap-2">
+                        👤 {{ user.username }}
+                    </a>
+                    <form action="{% url 'accounts:logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-xl font-semibold transition">Вийти</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="hover:text-amber-400 font-semibold px-4 py-2 transition">Увійти</a>
+                    <a href="{% url 'accounts:register' %}" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2.5 rounded-xl transition shadow-lg">Реєстрація</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 w-full mt-4">
+        {% for message in messages %}
+        <div class="p-4 rounded-xl mb-3 shadow-lg border {% if message.tags == 'error' %}bg-rose-950/50 border-rose-800 text-rose-200{% elif message.tags == 'warning' %}bg-amber-950/50 border-amber-800 text-amber-200{% else %}bg-emerald-950/50 border-emerald-800 text-emerald-200{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 «Потужний Shop». Усі права захищені ⚡</p>
+    </footer>
+
+</body>
+</html>

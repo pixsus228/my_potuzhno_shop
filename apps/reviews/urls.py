@@ -1,7 +1,8 @@
-from rest_framework.routers import DefaultRouter
-from .views import ReviewViewSet
+from django.urls import path
+from .views import ReviewUpdateView
 
-router = DefaultRouter()
-router.register(r'reviews', ReviewViewSet, basename='review')
+app_name = 'reviews'
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('<int:pk>/edit/', ReviewUpdateView.as_view(), name='review_edit'),
+]

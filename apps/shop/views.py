@@ -1,62 +1,36 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
-from django.db.models import Q
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
-from .models import Product
-from .serializers import ProductSerializer
+from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer
+
+def product_list_view(request):
+    # Показуємо абсолютно всі активні товари без обрізання
+    products = Product.objects.filter(is_active=True)
+    categories = Category.objects.all()
+    
+    query = request.GET.get('q')
+    if query:
+        products = products.filter(name__icontains=query)
+        
+    sort = request.GET.get('sort')
+    if sort == 'price' or sort == 'price_asc':
+        products = products.order_by('price')
+    elif sort == '-price' or sort == 'price_desc':
+        products = products.order_by('-price')
+    elif sort == 'newest':
+        products = products.order_by('-created_at')
+        
+    return render(request, 'shop/product_list.html', {'products': products, 'categories': categories})
+
+def product_detail_view(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+    reviews = product.reviews.all() if hasattr(product, 'reviews') else []
+    return render(request, 'shop/product_detail.html', {'product': product, 'reviews': reviews})
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-class ProductListView(ListView):
-    model = Product
-    template_name = 'shop/product_list.html'
-    context_object_name = 'product_list'
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        query = self.request.GET.get('q')
-        sort = self.request.GET.get('sort')
-
-        if query:
-            queryset = queryset.filter(
-                Q(name__icontains=query) | Q(description__icontains=query)
-            )
-
-        if sort == 'price_asc':
-            queryset = queryset.order_by('price')
-        elif sort == 'price_desc':
-            queryset = queryset.order_by('-price')
-        elif sort == 'newest':
-            queryset = queryset.order_by('-created_at')
-
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['query'] = self.request.GET.get('q', '')
-        context['current_sort'] = self.request.GET.get('sort', '')
-        return context
-
-class ProductDetailView(DetailView):
-    model = Product
-    template_name = 'shop/product_detail.html'
-    context_object_name = 'object'
-
-class ProductCreateView(CreateView):
-    model = Product
-    fields = ['name', 'slug', 'description', 'price', 'category', 'brand', 'size']
-    template_name = 'shop/product_form.html'
-    success_url = reverse_lazy('shop:product_list')
-
-class ProductUpdateView(UpdateView):
-    model = Product
-    fields = ['name', 'slug', 'description', 'price', 'category', 'brand', 'size']
-    template_name = 'shop/product_form.html'
-    success_url = reverse_lazy('shop:product_list')
-
-class ProductDeleteView(DeleteView):
-    model = Product
-    template_name = 'shop/product_confirm_delete.html'
-    success_url = reverse_lazy('shop:product_list')
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer

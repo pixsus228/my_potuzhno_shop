@@ -1,44 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="mb-8 text-center">
-    <h1 class="text-4xl font-extrabold text-white mb-2">Каталог екіпірування ⚡</h1>
-    <p class="text-gray-400">Обирай найпотужніші товари для перемог!</p>
-</div>
-
-<div class="bg-gray-800 border border-gray-700 rounded-xl p-4 mb-8 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
-    <form method="get" class="flex w-full md:w-auto gap-2 flex-grow max-w-lg">
-        <input type="text" name="q" value="{{ query }}" placeholder="Пошук товарів..." class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-amber-400">
-        <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold px-5 py-2 rounded-lg transition">Пошук</button>
-    </form>
-
-    <form method="get" class="flex items-center gap-2 w-full md:w-auto justify-end">
-        {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
-        <label class="text-sm text-gray-400 whitespace-nowrap">Сортування:</label>
-        <select name="sort" onchange="this.form.submit()" class="bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-400">
-            <option value="">За замовчуванням</option>
-            <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Від дешевих до дорогих</option>
-            <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Від дорогих до дешевих</option>
-            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Найновіші</option>
-        </select>
-    </form>
-</div>
-
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    {% for product in product_list %}
-    <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden shadow-xl hover:border-amber-400 transition flex flex-col justify-between">
-        <div class="p-5 flex-grow">
-            <h2 class="text-xl font-bold text-white mb-2">
-                <a href="{% url 'shop:product_detail' product.slug %}" class="hover:text-amber-400 transition">{{ product.name }}</a>
-            </h2>
-            <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
-        </div>
-        <div class="px-5 pb-5 border-t border-gray-700/50 pt-4 flex items-center justify-between">
-            <span class="text-2xl font-black text-amber-400">{{ product.price }} ₴</span>
-            <a href="{% url 'shop:product_detail' product.slug %}" class="bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold px-3 py-2 rounded-lg text-sm transition">Деталі</a>
-        </div>
+<div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-black tracking-tight text-white mb-2">Каталог екіпірування ⚡</h1>
+        <p class="text-slate-400">Обирай найпотужніші товари для перемог!</p>
     </div>
-    {% empty %}
-    <p class="col-span-full text-center text-gray-400 py-12">За вашим запитом нічого не знайдено.</p>
-    {% endfor %}
+
+    <form method="get" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div class="flex w-full md:w-auto gap-2 flex-grow">
+            <input type="text" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Пошук товарів..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:border-amber-400 focus:outline-none transition">
+            <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl transition shadow">Пошук</button>
+        </div>
+        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+            <label class="text-sm font-semibold text-slate-400 whitespace-nowrap">Сортування:</label>
+            <select name="sort" onchange="this.form.submit()" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:border-amber-400 focus:outline-none transition">
+                <option value="">За замовчуванням</option>
+                <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Від дешевих до дорогих</option>
+                <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Від дорогих до дешевих</option>
+                <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Найновіші</option>
+            </select>
+        </div>
+    </form>
+
+    {% if products %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for product in products %}
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:border-slate-700 transition">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-2">{{ product.name }}</h3>
+                <p class="text-slate-400 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+                <span class="text-2xl font-black text-amber-400">{{ product.price }} ₴</span>
+                <a href="{% url 'shop:product_detail' product.slug %}" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl transition shadow">Детальніше</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-20 bg-slate-900/50 border border-slate-800 rounded-2xl">
+        <p class="text-slate-400 text-lg">За вашим запитом нічого не знайдено.</p>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

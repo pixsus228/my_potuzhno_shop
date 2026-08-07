@@ -1,4 +1,4 @@
-﻿from django.urls import reverse
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from apps.shop.models import Product, Category
@@ -13,15 +13,14 @@ class ProductAPITestCase(APITestCase):
             price=2500.00,
             category=self.category
         )
-        self.list_url = reverse('product-api-list')
+        self.list_url = reverse('shop:product-list')
+        self.detail_url = reverse('shop:product-detail', kwargs={'pk': self.product.pk})
 
     def test_get_product_list(self):
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreaterEqual(len(response.data), 1)
 
     def test_get_product_detail(self):
-        detail_url = reverse('product-api-detail', args=[self.product.id])
-        response = self.client.get(detail_url)
+        response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.product.name)

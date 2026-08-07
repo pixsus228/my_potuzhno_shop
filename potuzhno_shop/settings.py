@@ -1,11 +1,9 @@
 import os
-import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(str(BASE_DIR / 'apps'))
 
-SECRET_KEY = 'django-insecure-j&3ibo=fv2%c4=r*6u038lz@^9ez=&=4y2h&hc)46-_!oczu%8'
+SECRET_KEY = 'django-insecure-potuzhno-shop-secret-key'
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 
@@ -17,21 +15,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'drf_spectacular',
+    'rest_framework_simplejwt',
     'graphene_django',
-    'apps.shop.apps.ShopConfig',
-    'apps.accounts.apps.AccountsConfig',
-    'apps.orders.apps.OrdersConfig',
-    'apps.reviews.apps.ReviewsConfig',
-    'apps.cart.apps.CartConfig',
+    'drf_spectacular',
+    'apps.shop',
+    'apps.accounts',
+    'apps.cart',
+    'apps.orders',
+    'apps.reviews',
 ]
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,7 +40,7 @@ ROOT_URLCONF = 'potuzhno_shop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'apps' / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,28 +54,28 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'potuzhno_shop.wsgi.application'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+AUTH_PASSWORD_VALIDATORS = []
+
+LANGUAGE_CODE = 'uk'
+TIME_ZONE = 'Europe/Kyiv'
+USE_I18N = True
+USE_TZ = True
+
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
-
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'Potuzhno Shop API',
-    'DESCRIPTION': 'API для інтернет-магазину ПОТУЖНО',
-    'VERSION': '1.0.0',
-}
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# CORS Configuration
-INSTALLED_APPS += ['corsheaders']
-MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
-CORS_ALLOW_ALL_ORIGINS = True
-

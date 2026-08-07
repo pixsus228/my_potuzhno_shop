@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+    <h2 class="text-2xl font-black text-white mb-6 text-center">Вхід в систему ⚡</h2>
+    <form method="post" class="space-y-5">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">{{ field.label }}</label>
+            <div class="relative">
+                {{ field }}
+                {% if "password" in field.name.lower %}
+                <button type="button" onclick="togglePassword('{{ field.id_for_label }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-sm font-bold">👁️</button>
+                {% endif %}
+            </div>
+            {% if field.errors %}
+            <p class="text-rose-500 text-xs mt-1">{{ field.errors.0 }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg mt-2">Увійти</button>
+    </form>
+</div>
+<script>
+function togglePassword(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "🙈";
+    } else {
+        input.type = "password";
+        btn.textContent = "👁️";
+    }
+}
+// Додаємо класи стилів до рендерерів Django-форм у реальному часі
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("input:not([type=hidden]), select, textarea").forEach(el => {
+        if (!el.classList.contains("bg-slate-950")) {
+            el.className = "w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none transition";
+        }
+    });
+});
+</script>
+{% endblock %}
