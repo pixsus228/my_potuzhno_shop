@@ -1,0 +1,43 @@
+{% load static %}
+<div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg hover:border-amber-500/50 transition-all duration-300">
+    <div class="relative">
+        <a href="{% url 'shop:product_detail' product.slug %}">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover rounded-xl mb-4">
+            {% else %}
+                <div class="w-full h-48 bg-slate-800 rounded-xl mb-4 flex items-center justify-center text-slate-500">ПОТУЖНО</div>
+            {% endif %}
+        </a>
+        
+        {% if request.user.is_authenticated %}
+            <form action="{% url 'shop:toggle_favourite' product.slug %}" method="post" class="absolute top-2 right-2">
+                {% csrf_token %}
+                <button type="submit" class="p-2 bg-slate-950/80 hover:bg-slate-950 rounded-full text-rose-500 transition shadow">
+                    {% if product in request.user.profile.favourites.all %}
+                        ❤️
+                    {% else %}
+                        🤍
+                    {% endif %}
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div>
+        <div class="flex justify-between items-center text-xs text-amber-400 font-semibold uppercase tracking-wider mb-1">
+            <span>{{ product.category.name }}</span>
+            {% if product.brand %}
+                <span class="text-slate-400 font-normal">{{ product.brand.name }}</span>
+            {% endif %}
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2 truncate">
+            <a href="{% url 'shop:product_detail' product.slug %}" class="hover:text-amber-400 transition">{{ product.name }}</a>
+        </h3>
+        <div class="flex items-center justify-between mt-4">
+            <span class="text-xl font-extrabold text-white">{{ product.price }} ₴</span>
+            <a href="{% url 'shop:product_detail' product.slug %}" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-sm transition">
+                Детальніше
+            </a>
+        </div>
+    </div>
+</div>

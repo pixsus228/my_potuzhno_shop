@@ -1,9 +1,8 @@
-﻿from decimal import Decimal
+from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from apps.shop.models import Category, Brand, Size, Product
+from apps.shop.models import Category, Brand, Size, Product, Review
 from apps.accounts.models import Profile
-from apps.reviews.models import Review
 
 CATEGORIES = {
     "hoodies": "Худі",
@@ -41,36 +40,15 @@ PRODUCTS = [
     ("Вітровка Light", "jacket-windbreaker", "jackets", "nova", "1690.00", "woman", 11, False, "JK-WND-015"),
 ]
 
-USERS = [("demo1", "Олег"), ("demo2", "Марта"), ("demo3", "Ігор")]
-
-REVIEWS = [
-    ("demo1", "hoodie-oversize", 5, "Топ худі — тепле, не розтягнулось після прання."),
-    ("demo2", "hoodie-oversize", 4, "Гарне, але розмір трохи завеликий, беріть менший."),
-    ("demo1", "sneakers-runner", 5, "Легкі й зручні, добре тримають стопу на бігу."),
-    ("demo3", "sneakers-runner", 5, "Найкращі кросівки за цю ціну."),
-    ("demo2", "tshirt-slim", 4, "Приємна тканина, сидить по фігурі."),
-    ("demo1", "jacket-bomber", 3, "Загалом норм, але блискавка спершу трохи туга."),
-    ("demo2", "jacket-bomber", 2, "Очікував більшого за таку ціну."),
-    ("demo3", "tshirt-basic", 5, "Базова футболка, яку ношу щодня."),
-    ("demo1", "tshirt-basic", 4, "Гарна щільність тканини."),
-    ("demo2", "pants-cargo", 4, "Багато кишень, зручні."),
-    ("demo3", "sneakers-trail", 2, "Не зайшли — вузькі в носку."),
-    ("demo1", "hoodie-crop", 5, "Дівчині зайшло, якість супер."),
-]
-
-FAVORITES = {
-    "demo1": ["hoodie-oversize", "sneakers-runner", "jacket-bomber"],
-}
-
 class Command(BaseCommand):
-    help = "Наповнює каталог демо-даними: категорії, бренди, розміри, товари, користувачі, відгуки, обране."
+    help = "Наповнює каталог демо-даними: категорії, бренди, розміри, товари."
 
     def handle(self, *args, **options):
         cats = {s: Category.objects.get_or_create(slug=s, defaults={"name": n})[0] for s, n in CATEGORIES.items()}
         brands = {s: Brand.objects.get_or_create(slug=s, defaults={"name": n})[0] for s, n in BRANDS.items()}
         sizes = {lbl: Size.objects.get_or_create(name=lbl)[0] for lbl in SIZES_LETTER + SIZES_SHOE}
 
-        products, created = {}, 0
+        created = 0
         for name, slug, cat, brand, price, audience, stock, featured, sku in PRODUCTS:
             p, was_created = Product.objects.get_or_create(
                 slug=slug,
@@ -80,36 +58,8 @@ class Command(BaseCommand):
                     "stock": stock, "is_featured": featured, "sku": sku,
                 },
             )
-            p.brand = brands[brand]
-            p.save()
             size_labels = SIZES_SHOE if cat == "sneakers" else SIZES_LETTER
             p.sizes.set([sizes[lbl] for lbl in size_labels])
-            products[slug] = p
             created += int(was_created)
 
-        users = {}
-        for username, first_name in USERS:
-            u, was_created = User.objects.get_or_create(username=username, defaults={"first_name": first_name})
-            if was_created:
-                u.set_password("demo12345")
-                u.save()
-            Profile.objects.get_or_create(user=u)
-            users[username] = u
-
-        for username, product_slug, rating, text in REVIEWS:
-            Review.objects.get_or_create(
-                user=users[username], product=products[product_slug],
-                defaults={"rating": rating, "text": text},
-            )
-
-        for username, slugs in FAVORITES.items():
-            profile = users[username].profile
-            fav_field = getattr(profile, "favourites", getattr(profile, "favorites", None))
-            if fav_field is not None:
-                fav_field.set([products[s] for s in slugs])
-
-        self.stdout.write(self.style.SUCCESS(
-            f"Готово: категорій {len(cats)}, брендів {len(brands)}, розмірів {len(sizes)}, "
-            f"нових товарів {created} (усього {Product.objects.count()}), "
-            f"відгуків {Review.objects.count()}, користувачів {len(users)}."
-        ))
+        self.stdout.write(self.style.SUCCESS(f"Успішно створено нових товарів: {created} (усього: {Product.objects.count()})."))

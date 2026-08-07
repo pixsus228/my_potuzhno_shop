@@ -1,15 +1,28 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import product_list_view, product_detail_view, ProductViewSet, CategoryViewSet
+from django.urls import path
+from .views import (
+    HomeView,
+    ProductListView,
+    ProductDetailView,
+    toggle_favourite,
+    contact,
+    review_create,
+    product_create,
+    product_update,
+    product_delete,
+    review_delete
+)
 
-router = DefaultRouter()
-router.register(r'products', ProductViewSet, basename='product')
-router.register(r'categories', CategoryViewSet, basename='category')
-
-app_name = 'shop'
+app_name = "shop"
 
 urlpatterns = [
-    path('', product_list_view, name='product_list'),
-    path('products/<slug:slug>/', product_detail_view, name='product_detail'),
-    path('api/', include(router.urls)),
+    path("", HomeView.as_view(), name="home"),
+    path("products/", ProductListView.as_view(), name="product_list"),
+    path("products/add/", product_create, name="product_create"),
+    path("products/<slug:slug>/", ProductDetailView.as_view(), name="product_detail"),
+    path("products/<slug:slug>/edit/", product_update, name="product_update"),
+    path("products/<slug:slug>/delete/", product_delete, name="product_delete"),
+    path("products/<slug:slug>/review/", review_create, name="review_create"),
+    path("favourite/toggle/<slug:slug>/", toggle_favourite, name="toggle_favourite"),
+    path("contact/", contact, name="contact"),
+    path("review/<int:pk>/", review_delete, name="review_delete"),
 ]

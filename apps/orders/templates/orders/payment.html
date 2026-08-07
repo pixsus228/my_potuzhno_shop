@@ -1,26 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="max-w-md mx-auto bg-gray-800 border border-gray-700 rounded-2xl p-8 shadow-2xl mt-10">
+<div class="max-w-md mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl mt-10">
     <h2 class="text-2xl font-black text-white mb-4 text-center">Оплата замовлення #{{ order.id }} 💳</h2>
-    <p class="text-gray-400 text-center mb-6">До сплати: <span class="text-amber-400 font-bold text-xl">{{ order.total_price }} ₴</span></p>
+    <p class="text-slate-400 text-center mb-6">До сплати: <span class="text-amber-400 font-bold text-xl">{{ order.total_price }} ₴</span></p>
     
     <form method="post" class="space-y-4">
         {% csrf_token %}
         <div>
-            <label class="block text-sm font-medium text-gray-300 mb-1">Номер картки</label>
-            type="text" placeholder="4141 4141 4141 4141" maxlength="19" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-amber-400 focus:outline-none" required>
+            <label class="block text-sm font-medium text-slate-300 mb-1">Номер картки</label>
+            <input type="text" placeholder="4141 4141 4141 4141" maxlength="19" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none" required>
         </div>
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">Термін дії</label>
-                <input type="text" placeholder="MM/YY" maxlength="5" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-amber-400 focus:outline-none" required>
+                <label class="block text-sm font-medium text-slate-300 mb-1">Термін дії</label>
+                <input type="text" placeholder="MM/YY" maxlength="5" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none" required>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">CVV</label>
-                <input type="password" placeholder="123" maxlength="3" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:border-amber-400 focus:outline-none" required>
+                <label class="block text-sm font-medium text-slate-300 mb-1">CVV</label>
+                <input type="password" placeholder="123" maxlength="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none" required>
             </div>
         </div>
-        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold py-3 rounded-lg transition shadow-lg mt-4">Сплатити {{ order.total_price }} ₴</button>
+        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg mt-4">Сплатити {{ order.total_price }} ₴</button>
     </form>
 </div>
 {% endblock %}
