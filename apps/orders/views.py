@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -6,7 +7,7 @@ from rest_framework import viewsets
 from .models import Order, OrderItem
 from .serializers import OrderSerializer
 from apps.shop.models import Product
-from apps.cart.models import Cart
+from apps.cart.services.cart_service import CartService
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
@@ -15,13 +16,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user if self.request.user.is_authenticated else None)
 
 def checkout_view(request):
-    cart = request.session.get('cart', {})
-    if not cart and request.user.is_authenticated:
-        db_cart = Cart.objects.filter(user=request.user).first()
-        if db_cart:
-            cart = {str(item.product.id): {'name': item.product.name, 'price': float(item.product.price), 'quantity': item.quantity, 'image': item.product.image.url if hasattr(item.product, 'image') and item.product.image else ''} for item in db_cart.items.all()}
+    cart_service = CartService(request)
+    cart, total_price = cart_service.get_cart_data()
 
-    # додав перевірку на порожній кошик для GET та POST запитів із редиректом
     if not cart:
         messages.warning(request, "Ваш кошик порожній!")
         return redirect('cart:cart_detail')
@@ -35,8 +32,23 @@ def checkout_view(request):
         payment_method = request.POST.get('payment_method', 'cash')
         promo_code = request.POST.get('promo_code', '')
         user = request.user if request.user.is_authenticated else None
-        total_price = sum(item['price'] * item['quantity'] for item in cart.values())
-        
+
+        # беру актуальні ціни безпосередньо з БД і фіксую Decimal
+        final_total = Decimal('0.00')
+        items_payload = []
+        for pid, item in cart.items():
+            product = Product.objects.filter(id=int(pid)).first()
+            if product:
+                price = Decimal(str(product.price))
+                qty = item['quantity']
+                final_total += price * qty
+                items_payload.append({
+                    'product': product,
+                    'product_name': product.name,
+                    'price': price,
+                    'quantity': qty
+                })
+
         order = Order.objects.create(
             user=user,
             full_name=full_name,
@@ -46,36 +58,35 @@ def checkout_view(request):
             branch=branch,
             payment_method=payment_method,
             promo_code=promo_code,
-            total_price=total_price,
+            total_price=final_total,
             status='Pending'
         )
-        
-        for pid, item in cart.items():
-            product = Product.objects.filter(id=int(pid)).first()
-            if product:
-                OrderItem.objects.create(
-                    order=order,
-                    product=product,
-                    price=item['price'],
-                    quantity=item['quantity']
-                )
-                
-        request.session['cart'] = {}
-        request.session.modified = True
-        
+
+        for payload in items_payload:
+            # записав позицію замовлення з фіксацією назви та актуальної ціни
+            OrderItem.objects.create(
+                order=order,
+                product=payload['product'],
+                product_name=payload['product_name'],
+                price=payload['price'],
+                quantity=payload['quantity']
+            )
+
+        # чищу кошик після успішного чекауту
+        cart_service.clear()
+
         try:
             send_mail(
                 f"Замовлення №{order.id} прийнято",
-                f"Дякуємо за покупку, Сер! Ваше замовлення на суму {total_price} ₴ успішно оформлено.",
+                f"Дякуємо за покупку, Сер! Ваше замовлення на суму {final_total} ₴ успішно оформлено.",
                 settings.DEFAULT_FROM_EMAIL,
                 [user.email] if user and user.email else [settings.DEFAULT_FROM_EMAIL],
                 fail_silently=True,
             )
         except Exception:
             pass
-            
+
         messages.success(request, f"Замовлення №{order.id} успішно оформлено!")
         return render(request, 'orders/success.html', {'order': order})
 
-    total_price = sum(item['price'] * item['quantity'] for item in cart.values())
     return render(request, 'orders/checkout.html', {'cart': cart, 'total_price': total_price})
