@@ -24,9 +24,22 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    # змінив CASCADE на SET_NULL для збереження історії
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    # додав знімок назви товару на момент купівлі
+    product_name = models.CharField(max_length=255, blank=True, default='')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 
+    def save(self, *args, **kwargs):
+        # записав знімок даних безпосередньо перед збереженням
+        if self.product:
+            if not self.product_name:
+                self.product_name = self.product.name
+            if not self.price:
+                self.price = self.product.price
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.quantity} x {self.product.name}"
+        name = self.product.name if self.product else (self.product_name or "Видалений товар")
+        return f"{self.quantity} x {name}"

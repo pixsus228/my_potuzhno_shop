@@ -3,6 +3,8 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db import transaction
+from django.db.models import F
 from rest_framework import viewsets
 from .models import Order, OrderItem
 from .serializers import OrderSerializer
@@ -33,47 +35,59 @@ def checkout_view(request):
         promo_code = request.POST.get('promo_code', '')
         user = request.user if request.user.is_authenticated else None
 
-        # беру актуальні ціни безпосередньо з БД і фіксую Decimal
-        final_total = Decimal('0.00')
-        items_payload = []
-        for pid, item in cart.items():
-            product = Product.objects.filter(id=int(pid)).first()
-            if product:
-                price = Decimal(str(product.price))
-                qty = item['quantity']
-                final_total += price * qty
-                items_payload.append({
-                    'product': product,
-                    'product_name': product.name,
-                    'price': price,
-                    'quantity': qty
-                })
+        # обгортаю оформлення замовлення в атомарну транзакцію
+        with transaction.atomic():
+            final_total = Decimal('0.00')
+            items_payload = []
 
-        order = Order.objects.create(
-            user=user,
-            full_name=full_name,
-            phone=phone,
-            address=address,
-            city=city,
-            branch=branch,
-            payment_method=payment_method,
-            promo_code=promo_code,
-            total_price=final_total,
-            status='Pending'
-        )
+            for pid, item in cart.items():
+                # блокую товар на час операції для уникнення race condition
+                product = Product.objects.select_for_update().filter(id=int(pid)).first()
+                if product:
+                    qty = item['quantity']
+                    # перевірив залишок товару на складі
+                    if hasattr(product, 'stock') and product.stock > 0 and product.stock < qty:
+                        messages.error(request, f"Товару {product.name} недостатньо на складі.")
+                        return redirect('cart:cart_detail')
 
-        for payload in items_payload:
-            # записав позицію замовлення з фіксацією назви та актуальної ціни
-            OrderItem.objects.create(
-                order=order,
-                product=payload['product'],
-                product_name=payload['product_name'],
-                price=payload['price'],
-                quantity=payload['quantity']
+                    price = Decimal(str(product.price))
+                    final_total += price * qty
+                    items_payload.append({
+                        'product': product,
+                        'product_name': product.name,
+                        'price': price,
+                        'quantity': qty
+                    })
+
+                    # списав залишок зі складу через F-вираз
+                    if hasattr(product, 'stock') and product.stock >= qty:
+                        Product.objects.filter(id=product.id).update(stock=F('stock') - qty)
+
+            order = Order.objects.create(
+                user=user,
+                full_name=full_name,
+                phone=phone,
+                address=address,
+                city=city,
+                branch=branch,
+                payment_method=payment_method,
+                promo_code=promo_code,
+                total_price=final_total,
+                status='Pending'
             )
 
-        # чищу кошик після успішного чекауту
-        cart_service.clear()
+            for payload in items_payload:
+                # зафіксував позицію знімком даних
+                OrderItem.objects.create(
+                    order=order,
+                    product=payload['product'],
+                    product_name=payload['product_name'],
+                    price=payload['price'],
+                    quantity=payload['quantity']
+                )
+
+            # чищу кошик після успішного збереження
+            cart_service.clear()
 
         try:
             send_mail(
