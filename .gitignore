@@ -222,3 +222,6 @@ __marimo__/
 docs/
 .claude/
 staticfiles/
+
+credentials.py
+secret.key
