@@ -2,18 +2,18 @@ name: ПОТУЖНО Shop CI Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ "feat/final-submission", "main" ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ "main" ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:15-alpine
+        image: postgres:15
         env:
-          POSTGRES_DB: potuzhno_shop
+          POSTGRES_DB: potuzhno_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password123
         ports:
@@ -25,23 +25,30 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run Pytest Tests
-        env:
-          DB_HOST: localhost
-          DB_NAME: potuzhno_shop
-          DB_USER: postgres
-          DB_PASSWORD: password123
-        run: |
-          python -m pytest
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run database migrations
+      env:
+        DB_NAME: potuzhno_test
+        DB_USER: postgres
+        DB_PASSWORD: password123
+        DB_HOST: localhost
+        DB_PORT: 5432
+      run: |
+        python manage.py migrate
+    - name: Run pytest
+      env:
+        DB_NAME: potuzhno_test
+        DB_USER: postgres
+        DB_PASSWORD: password123
+        DB_HOST: localhost
+        DB_PORT: 5432
+      run: |
+        python -m pytest
