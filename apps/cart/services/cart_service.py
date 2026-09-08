@@ -19,6 +19,11 @@ class CartService:
         else:
             self.cart_session = {}
 
+    def _mark_modified(self):
+        # зафіксував зміну сесії за наявності відповідного атрибута
+        if self.session is not None and hasattr(self.session, 'modified'):
+            self.session.modified = True
+
     def add(self, product_id, quantity=1):
         product = get_object_or_404(Product, id=product_id)
         if self.user:
@@ -36,7 +41,7 @@ class CartService:
             current_qty = self.cart_session.get(pid, {}).get('quantity', 0) if isinstance(self.cart_session.get(pid), dict) else self.cart_session.get(pid, 0)
             self.cart_session[pid] = {'quantity': current_qty + quantity}
             self.session['cart'] = self.cart_session
-            self.session.modified = True
+            self._mark_modified()
 
     def increase(self, product_id):
         if self.user:
@@ -52,7 +57,7 @@ class CartService:
                 current_qty = self.cart_session[pid].get('quantity', 1) if isinstance(self.cart_session[pid], dict) else self.cart_session[pid]
                 self.cart_session[pid] = {'quantity': current_qty + 1}
                 self.session['cart'] = self.cart_session
-                self.session.modified = True
+                self._mark_modified()
 
     def decrease(self, product_id):
         if self.user:
@@ -74,7 +79,7 @@ class CartService:
                 else:
                     del self.cart_session[pid]
                 self.session['cart'] = self.cart_session
-                self.session.modified = True
+                self._mark_modified()
 
     def clear(self):
         if self.user:
@@ -82,7 +87,7 @@ class CartService:
             CartItem.objects.filter(cart__user=self.user).delete()
         if self.session is not None:
             self.session['cart'] = {}
-            self.session.modified = True
+            self._mark_modified()
 
     def merge_session_cart(self):
         # переношу товари із сесії в базу даних при вході користувача
@@ -105,7 +110,7 @@ class CartService:
                     item.quantity = qty
                 item.save()
         self.session['cart'] = {}
-        self.session.modified = True
+        self._mark_modified()
 
     def get_cart_data(self):
         # отримую актуальні ціни з БД та розраховую суму в Decimal
