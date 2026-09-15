@@ -1,7 +1,10 @@
-from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect, render
+
 from apps.shop.models import Product
+
 from .services.cart_service import CartService
+
 
 def cart_add(request, product_id):
     # додав товар через сервіс

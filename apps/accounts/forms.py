@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth.models import User
+
 from .models import Profile
+
 
 class ProfileForm(forms.ModelForm):
     email = forms.EmailField(required=False, label="Електронна пошта", widget=forms.EmailInput(attrs={'class': 'w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-amber-400 focus:outline-none transition'}))

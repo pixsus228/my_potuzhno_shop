@@ -1,7 +1,10 @@
 from decimal import Decimal
+
 from django.shortcuts import get_object_or_404
+
 from apps.cart.models import Cart, CartItem
 from apps.shop.models import Product
+
 
 class CartService:
     def __init__(self, request=None, user=None):
@@ -138,7 +141,7 @@ class CartService:
                         'product': p
                     }
         elif self.session is not None:
-            pids = [int(pid) for pid in self.cart_session.keys() if str(pid).isdigit()]
+            pids = [int(pid) for pid in self.cart_session if str(pid).isdigit()]
             products = Product.objects.filter(id__in=pids)
             p_map = {p.id: p for p in products}
 

@@ -1,6 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+
 from apps.shop.models import Product
+
 
 class Review(models.Model):
     # додав зв'язок з користувачем

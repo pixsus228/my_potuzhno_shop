@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import Review, Wishlist
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     # додав серіалізацію відгуків

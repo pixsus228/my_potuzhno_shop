@@ -1,1 +1,1 @@
-from .cart_serializers import CartSerializer
+from .cart_serializers import CartSerializer as CartSerializer

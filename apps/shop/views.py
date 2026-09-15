@@ -1,17 +1,24 @@
-from rest_framework.permissions import IsAdminUser
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
-from django.db.models import Q
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from rest_framework import viewsets
-from rest_framework.filters import SearchFilter, OrderingFilter
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets
+from rest_framework.filters import OrderingFilter, SearchFilter
 
-from .models import Product, Category, Brand, Size
+from .models import Brand, Category, Product, Size
 from .serializers.product import ProductSerializer, SizeSerializer
+
 
 # --- Web Views ---
 class HomeView(ListView):
@@ -143,16 +150,19 @@ def review_update(request, pk=None):
     if pk:
         from apps.reviews.models import Review
         review = get_object_or_404(Review, pk=pk)
-        if request.user.is_authenticated and (request.user == review.user or request.user.is_staff):
-            if request.method == 'POST':
-                text = request.POST.get('text')
-                rating = request.POST.get('rating', review.rating)
-                if text:
-                    review.text = text
-                    review.rating = rating
-                    review.save()
-                    messages.success(request, 'Відгук оновлено.')
-                    return redirect(review.product.get_absolute_url())
+        if (
+            request.user.is_authenticated
+            and (request.user == review.user or request.user.is_staff)
+            and request.method == 'POST'
+        ):
+            text = request.POST.get('text')
+            rating = request.POST.get('rating', review.rating)
+            if text:
+                review.text = text
+                review.rating = rating
+                review.save()
+                messages.success(request, 'Відгук оновлено.')
+                return redirect(review.product.get_absolute_url())
     return redirect('/')
 
 def review_delete(request, pk=None):

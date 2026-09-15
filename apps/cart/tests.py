@@ -1,9 +1,10 @@
 import pytest
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory
+
 from apps.cart.models import Cart, CartItem
 from apps.cart.services.cart_service import CartService
-from apps.shop.models import Product, Category
+from apps.shop.models import Category, Product
 
 User = get_user_model()
 

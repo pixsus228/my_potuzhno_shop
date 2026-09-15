@@ -1,7 +1,8 @@
-from rest_framework.test import APITestCase
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-from apps.shop.models import Product, Category, Brand
+from django.urls import reverse
+from rest_framework.test import APITestCase
+
+from apps.shop.models import Brand, Category, Product
 
 User = get_user_model()
 

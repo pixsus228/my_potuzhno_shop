@@ -1,5 +1,7 @@
 import pytest
+
 from apps.orders.models import Order
+
 
 @pytest.mark.django_db
 def test_create_order():
@@ -18,8 +20,9 @@ def test_create_order():
 def test_order_item_snapshot_and_set_null():
     # перевірив збереження знімка товару та зв'язок SET_NULL при видаленні
     from decimal import Decimal
-    from apps.shop.models import Product, Category
+
     from apps.orders.models import Order, OrderItem
+    from apps.shop.models import Category, Product
 
     cat = Category.objects.create(name="Штани", slug="pants-cat")
     product = Product.objects.create(name="Карго", price=Decimal("1500.00"), category=cat, stock=5)

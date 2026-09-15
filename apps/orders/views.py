@@ -1,15 +1,20 @@
+import contextlib
 from decimal import Decimal
-from django.shortcuts import redirect, render
+
+from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.conf import settings
 from django.db import transaction
 from django.db.models import F
+from django.shortcuts import redirect, render
 from rest_framework import viewsets
+
+from apps.cart.services.cart_service import CartService
+from apps.shop.models import Product
+
 from .models import Order, OrderItem
 from .serializers import OrderSerializer
-from apps.shop.models import Product
-from apps.cart.services.cart_service import CartService
+
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
@@ -89,7 +94,7 @@ def checkout_view(request):
             # чищу кошик після успішного збереження
             cart_service.clear()
 
-        try:
+        with contextlib.suppress(Exception):
             send_mail(
                 f"Замовлення №{order.id} прийнято",
                 f"Дякуємо за покупку, Сер! Ваше замовлення на суму {final_total} ₴ успішно оформлено.",
@@ -97,8 +102,6 @@ def checkout_view(request):
                 [user.email] if user and user.email else [settings.DEFAULT_FROM_EMAIL],
                 fail_silently=True,
             )
-        except Exception:
-            pass
 
         messages.success(request, f"Замовлення №{order.id} успішно оформлено!")
         return render(request, 'orders/success.html', {'order': order})

@@ -1,7 +1,9 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from apps.shop.models import Product, Category
+
+from apps.shop.models import Category, Product
+
 
 class ProductAPITestCase(APITestCase):
     def setUp(self):

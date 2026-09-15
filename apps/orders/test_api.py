@@ -1,10 +1,11 @@
 import pytest
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from django.contrib.auth import get_user_model
-from apps.shop.models import Product, Category
+
 from apps.orders.models import Order
+from apps.shop.models import Category, Product
 
 User = get_user_model()
 

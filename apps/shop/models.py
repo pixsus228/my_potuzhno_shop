@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 from django.db.models import Avg, Count
 
 
@@ -25,6 +24,7 @@ class Brand(models.Model):
 
 
 from django.utils.text import slugify
+
 
 class Size(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name='Розмір')

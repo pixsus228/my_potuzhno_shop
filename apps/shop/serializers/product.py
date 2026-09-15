@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from apps.shop.models import Product, Category
+
+from apps.shop.models import Product
+
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:  
@@ -20,6 +22,8 @@ class ProductSerializer(serializers.ModelSerializer):
         return data
 
 from apps.shop.models import Size
+
+
 class SizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Size

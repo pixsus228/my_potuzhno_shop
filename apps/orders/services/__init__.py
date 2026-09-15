@@ -1,1 +1,1 @@
-from .statistics import get_orders_statistics
+from .statistics import get_orders_statistics as get_orders_statistics

@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from apps.shop.models import Product, Category
+
+from apps.shop.models import Category, Product
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,4 +13,4 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
-from .product import SizeSerializer
+from .product import SizeSerializer as SizeSerializer

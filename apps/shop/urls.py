@@ -1,20 +1,19 @@
 app_name = 'shop'
 from django.urls import path
+
 from .views import (
     HomeView,
-    ProductListView,
     ProductDetailView,
-    toggle_favourite,
+    ProductListView,
     contact,
-    review_create,
     product_create,
-    product_update,
     product_delete,
+    product_update,
+    review_create,
     review_delete,
-    review_update
+    review_update,
+    toggle_favourite,
 )
-
-
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),

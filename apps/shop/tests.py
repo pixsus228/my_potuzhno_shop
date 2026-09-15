@@ -1,13 +1,20 @@
 ﻿from decimal import Decimal
-from django.test import TestCase, Client
+
 from django.contrib.auth.models import User
-from django.db import IntegrityError
-from apps.shop.models import Category, Brand, Size, Product
-from apps.reviews.models import Review
+from django.test import Client, TestCase
+
 from apps.accounts.models import Profile
 from apps.cart.models import Cart, CartItem
 from apps.orders.models import Order, OrderItem
-from apps.shop.forms import ProductForm, ReviewForm, ProductFilterForm, ContactForm
+from apps.reviews.models import Review
+from apps.shop.forms import (
+    ContactForm,
+    ProductFilterForm,
+    ProductForm,
+    ReviewForm,
+)
+from apps.shop.models import Brand, Category, Product, Size
+
 
 class PotuzhnoShopUltimate100Tests(TestCase):
     def setUp(self):
@@ -76,7 +83,7 @@ class PotuzhnoShopUltimate100Tests(TestCase):
 
     # 21-35: Відгуки (Reviews)
     def test_021_review_creation(self):
-        r = Review.objects.create(user=self.user, product=self.product, rating=5, text="Топ!")
+        Review.objects.create(user=self.user, product=self.product, rating=5, text="Топ!")
         self.assertEqual(Review.objects.count(), 1)
     def test_022_review_str(self):
         r = Review.objects.create(user=self.user, product=self.product, rating=5, text="Топ!")
@@ -139,7 +146,7 @@ class PotuzhnoShopUltimate100Tests(TestCase):
         self.assertFalse(Profile.objects.filter(user_id=uid).exists())
     def test_040_profile_auto_creation_check(self):
         u3 = User.objects.create_user(username="u3", password="123")
-        prof, created = Profile.objects.get_or_create(user=u3)
+        prof, _created = Profile.objects.get_or_create(user=u3)
         self.assertTrue(prof.pk is not None)
 
     # 51-65: Кошик (Cart & CartItem)
@@ -219,7 +226,7 @@ class PotuzhnoShopUltimate100Tests(TestCase):
         order = Order.objects.create(user=self.user, full_name="Іванко", address="Київ", phone="0991112233", total_price=Decimal("555.50"))
         self.assertEqual(order.total_price, Decimal("555.50"))
     def test_059_order_items_related_name(self):
-        order = Order.objects.create(user=self.user, full_name="Іванко", address="Київ", phone="0991112233", total_price=Decimal("100"))
+        order = Order.objects.create(user=self.user, full_name="Іванко", address="Київ", phone="0991112233", total_price=Decimal(100))
         OrderItem.objects.create(order=order, product=self.product, price=100, quantity=1)
         self.assertEqual(order.items.count(), 1)
     def test_060_order_phone_max_length(self):

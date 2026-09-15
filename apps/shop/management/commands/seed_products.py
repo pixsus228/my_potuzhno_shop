@@ -1,8 +1,8 @@
 from decimal import Decimal
-from django.contrib.auth.models import User
+
 from django.core.management.base import BaseCommand
-from apps.shop.models import Category, Brand, Size, Product, Review
-from apps.accounts.models import Profile
+
+from apps.shop.models import Brand, Category, Product, Size
 
 CATEGORIES = {
     "hoodies": "Худі",

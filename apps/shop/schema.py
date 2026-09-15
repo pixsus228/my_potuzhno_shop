@@ -1,7 +1,9 @@
 ﻿import graphene
 from graphene_django import DjangoObjectType
-from apps.shop.models import Product, Category
+
 from apps.orders.models import Order
+from apps.shop.models import Category, Product
+
 
 class ProductType(DjangoObjectType):
     class Meta:
