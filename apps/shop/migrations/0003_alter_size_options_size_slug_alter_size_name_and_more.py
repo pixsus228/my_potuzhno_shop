@@ -4,28 +4,35 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop', '0002_brand_size_alter_category_options_and_more'),
+        ("shop", "0002_brand_size_alter_category_options_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='size',
-            options={'ordering': ['name'], 'verbose_name': 'Розмір', 'verbose_name_plural': 'Розміри'},
+            name="size",
+            options={
+                "ordering": ["name"],
+                "verbose_name": "Розмір",
+                "verbose_name_plural": "Розміри",
+            },
         ),
         migrations.AddField(
-            model_name='size',
-            name='slug',
-            field=models.SlugField(default='default-slug', unique=True, verbose_name='Слаг'),
+            model_name="size",
+            name="slug",
+            field=models.SlugField(
+                default="default-slug", unique=True, verbose_name="Слаг"
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='size',
-            name='name',
-            field=models.CharField(max_length=50, unique=True, verbose_name='Розмір'),
+            model_name="size",
+            name="name",
+            field=models.CharField(
+                max_length=50, unique=True, verbose_name="Розмір"
+            ),
         ),
         migrations.DeleteModel(
-            name='Review',
+            name="Review",
         ),
     ]

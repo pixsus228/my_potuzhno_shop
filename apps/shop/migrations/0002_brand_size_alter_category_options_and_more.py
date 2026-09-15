@@ -7,129 +7,208 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop', '0001_initial'),
+        ("shop", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Brand',
+            name="Brand",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('slug', models.SlugField(max_length=200)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("slug", models.SlugField(max_length=200)),
             ],
         ),
         migrations.CreateModel(
-            name='Size',
+            name="Size",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=10, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=10, unique=True)),
             ],
         ),
         migrations.AlterModelOptions(
-            name='category',
-            options={'ordering': ['-created_at'], 'verbose_name_plural': 'Categories'},
+            name="category",
+            options={
+                "ordering": ["-created_at"],
+                "verbose_name_plural": "Categories",
+            },
         ),
         migrations.AlterModelOptions(
-            name='product',
-            options={'ordering': ['-created_at']},
+            name="product",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='deleted_at',
+            model_name="product",
+            name="deleted_at",
         ),
         migrations.AddField(
-            model_name='category',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="category",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='product',
-            name='audience',
-            field=models.CharField(choices=[('unisex', 'Унісекс'), ('man', 'Чоловіче'), ('woman', 'Жіноче')], default='unisex', max_length=10, verbose_name='Аудиторія'),
+            model_name="product",
+            name="audience",
+            field=models.CharField(
+                choices=[
+                    ("unisex", "Унісекс"),
+                    ("man", "Чоловіче"),
+                    ("woman", "Жіноче"),
+                ],
+                default="unisex",
+                max_length=10,
+                verbose_name="Аудиторія",
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='is_featured',
-            field=models.BooleanField(default=False, verbose_name='Пропонований?'),
+            model_name="product",
+            name="is_featured",
+            field=models.BooleanField(
+                default=False, verbose_name="Пропонований?"
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='sku',
-            field=models.CharField(blank=True, db_index=True, max_length=20, null=True, unique=True, verbose_name='Артикул'),
+            model_name="product",
+            name="sku",
+            field=models.CharField(
+                blank=True,
+                db_index=True,
+                max_length=20,
+                null=True,
+                unique=True,
+                verbose_name="Артикул",
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='stock',
-            field=models.PositiveIntegerField(default=0, verbose_name='Залишок'),
+            model_name="product",
+            name="stock",
+            field=models.PositiveIntegerField(
+                default=0, verbose_name="Залишок"
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='updated_at',
+            model_name="product",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AlterField(
-            model_name='category',
-            name='name',
+            model_name="category",
+            name="name",
             field=models.CharField(max_length=200),
         ),
         migrations.AlterField(
-            model_name='category',
-            name='slug',
+            model_name="category",
+            name="slug",
             field=models.SlugField(max_length=200),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='products', related_query_name='product', to='shop.category'),
+            model_name="product",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="products",
+                related_query_name="product",
+                to="shop.category",
+            ),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='description',
+            model_name="product",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='name',
+            model_name="product",
+            name="name",
             field=models.CharField(max_length=200),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='price',
+            model_name="product",
+            name="price",
             field=models.DecimalField(decimal_places=2, max_digits=10),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='slug',
+            model_name="product",
+            name="slug",
             field=models.SlugField(max_length=200),
         ),
         migrations.AddField(
-            model_name='product',
-            name='brand',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='products', to='shop.brand'),
+            model_name="product",
+            name="brand",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="products",
+                to="shop.brand",
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='sizes',
-            field=models.ManyToManyField(blank=True, to='shop.size'),
+            model_name="product",
+            name="sizes",
+            field=models.ManyToManyField(blank=True, to="shop.size"),
         ),
         migrations.CreateModel(
-            name='Review',
+            name="Review",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rating', models.PositiveIntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], default=1)),
-                ('text', models.TextField(blank=True, max_length=1000)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to='shop.product')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "rating",
+                    models.PositiveIntegerField(
+                        choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)],
+                        default=1,
+                    ),
+                ),
+                ("text", models.TextField(blank=True, max_length=1000)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reviews",
+                        to="shop.product",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reviews",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
-                'unique_together': {('user', 'product')},
+                "ordering": ["-created_at"],
+                "unique_together": {("user", "product")},
             },
         ),
     ]

@@ -6,56 +6,77 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('orders', '0002_alter_order_options_remove_order_address_and_more'),
-        ('shop', '0005_alter_size_slug'),
+        ("orders", "0002_alter_order_options_remove_order_address_and_more"),
+        ("shop", "0005_alter_size_slug"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='order',
-            options={'ordering': ['-created_at'], 'verbose_name': 'Замовлення', 'verbose_name_plural': 'Замовлення'},
+            name="order",
+            options={
+                "ordering": ["-created_at"],
+                "verbose_name": "Замовлення",
+                "verbose_name_plural": "Замовлення",
+            },
         ),
         migrations.AddField(
-            model_name='order',
-            name='address',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Адреса'),
+            model_name="order",
+            name="address",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Адреса"
+            ),
         ),
         migrations.AddField(
-            model_name='order',
-            name='is_paid',
-            field=models.BooleanField(default=False, verbose_name='Оплачено'),
+            model_name="order",
+            name="is_paid",
+            field=models.BooleanField(default=False, verbose_name="Оплачено"),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='Дата створення'),
+            model_name="order",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, verbose_name="Дата створення"
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='phone',
-            field=models.CharField(max_length=50, verbose_name='Телефон'),
+            model_name="order",
+            name="phone",
+            field=models.CharField(max_length=50, verbose_name="Телефон"),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='status',
-            field=models.CharField(default='new', max_length=50, verbose_name='Статус'),
+            model_name="order",
+            name="status",
+            field=models.CharField(
+                default="new", max_length=50, verbose_name="Статус"
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='total_price',
-            field=models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Сума'),
+            model_name="order",
+            name="total_price",
+            field=models.DecimalField(
+                decimal_places=2, max_digits=10, verbose_name="Сума"
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, verbose_name='Користувач'),
+            model_name="order",
+            name="user",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Користувач",
+            ),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='shop.product', verbose_name='Продукт'),
+            model_name="orderitem",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="shop.product",
+                verbose_name="Продукт",
+            ),
         ),
     ]

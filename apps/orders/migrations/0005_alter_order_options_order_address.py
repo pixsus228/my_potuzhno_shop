@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('orders', '0004_alter_order_options_remove_order_address_and_more'),
+        ("orders", "0004_alter_order_options_remove_order_address_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='order',
-            options={'ordering': ['-created_at']},
+            name="order",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AddField(
-            model_name='order',
-            name='address',
-            field=models.CharField(default='', max_length=255),
+            model_name="order",
+            name="address",
+            field=models.CharField(default="", max_length=255),
         ),
     ]

@@ -27,13 +27,15 @@ from django.utils.text import slugify
 
 
 class Size(models.Model):
-    name = models.CharField(max_length=50, unique=True, verbose_name='Розмір')
-    slug = models.SlugField(max_length=50, unique=True, verbose_name='Слаг', blank=True)
+    name = models.CharField(max_length=50, unique=True, verbose_name="Розмір")
+    slug = models.SlugField(
+        max_length=50, unique=True, verbose_name="Слаг", blank=True
+    )
 
     class Meta:
-        verbose_name = 'Розмір'
-        verbose_name_plural = 'Розміри'
-        ordering = ['name']
+        verbose_name = "Розмір"
+        verbose_name_plural = "Розміри"
+        ordering = ["name"]
 
     def save(self, *args, **kwargs):
         # додав автогенерацію слагу перед збереженням
@@ -43,6 +45,7 @@ class Size(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class ProductQuerySet(models.QuerySet):
     def active(self):
@@ -67,27 +70,30 @@ class Product(models.Model):
         on_delete=models.PROTECT,
         null=False,
         related_name="products",
-        related_query_name="product"
+        related_query_name="product",
     )
     brand = models.ForeignKey(
         Brand,
         on_delete=models.PROTECT,
         null=True,
         blank=True,
-        related_name="products"
+        related_name="products",
     )
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
     description = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_active = models.BooleanField(default=True)
-    is_featured = models.BooleanField(default=False, verbose_name="Пропонований?")
+    is_featured = models.BooleanField(
+        default=False, verbose_name="Пропонований?"
+    )
 
     sku = models.CharField(
         max_length=20,
         unique=True,
         db_index=True,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name="Артикул",
     )
 
@@ -95,7 +101,7 @@ class Product(models.Model):
         max_length=10,
         choices=AUDIENCE_CHOICES,
         default="unisex",
-        verbose_name="Аудиторія"
+        verbose_name="Аудиторія",
     )
 
     stock = models.PositiveIntegerField(default=0, verbose_name="Залишок")

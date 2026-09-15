@@ -6,70 +6,97 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('orders', '0001_initial'),
-        ('shop', '0004_populate_size_slugs'),
+        ("orders", "0001_initial"),
+        ("shop", "0004_populate_size_slugs"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='order',
-            options={'verbose_name': 'Замовлення', 'verbose_name_plural': 'Замовлення'},
+            name="order",
+            options={
+                "verbose_name": "Замовлення",
+                "verbose_name_plural": "Замовлення",
+            },
         ),
         migrations.RemoveField(
-            model_name='order',
-            name='address',
+            model_name="order",
+            name="address",
         ),
         migrations.RemoveField(
-            model_name='order',
-            name='is_paid',
+            model_name="order",
+            name="is_paid",
         ),
         migrations.AddField(
-            model_name='order',
-            name='status',
-            field=models.CharField(default='pending', max_length=20, verbose_name='Статус'),
+            model_name="order",
+            name="status",
+            field=models.CharField(
+                default="pending", max_length=20, verbose_name="Статус"
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='Дата замовлення'),
+            model_name="order",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, verbose_name="Дата замовлення"
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='full_name',
-            field=models.CharField(max_length=255, verbose_name='ПІБ'),
+            model_name="order",
+            name="full_name",
+            field=models.CharField(max_length=255, verbose_name="ПІБ"),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='total_price',
-            field=models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Загальна ціна'),
+            model_name="order",
+            name="total_price",
+            field=models.DecimalField(
+                decimal_places=2, max_digits=10, verbose_name="Загальна ціна"
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='user',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='orders', to=settings.AUTH_USER_MODEL, verbose_name='Користувач'),
+            model_name="order",
+            name="user",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="orders",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Користувач",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='order',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='orders.order', verbose_name='Замовлення'),
+            model_name="orderitem",
+            name="order",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="items",
+                to="orders.order",
+                verbose_name="Замовлення",
+            ),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='price',
-            field=models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Ціна'),
+            model_name="orderitem",
+            name="price",
+            field=models.DecimalField(
+                decimal_places=2, max_digits=10, verbose_name="Ціна"
+            ),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='shop.product', verbose_name='Товар'),
+            model_name="orderitem",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="shop.product",
+                verbose_name="Товар",
+            ),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='quantity',
-            field=models.PositiveIntegerField(default=1, verbose_name='Кількість'),
+            model_name="orderitem",
+            name="quantity",
+            field=models.PositiveIntegerField(
+                default=1, verbose_name="Кількість"
+            ),
         ),
     ]

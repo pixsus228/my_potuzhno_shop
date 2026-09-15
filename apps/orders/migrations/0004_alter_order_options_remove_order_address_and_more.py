@@ -6,94 +6,109 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('orders', '0003_alter_order_options_order_address_order_is_paid_and_more'),
-        ('shop', '0005_alter_size_slug'),
+        (
+            "orders",
+            "0003_alter_order_options_order_address_order_is_paid_and_more",
+        ),
+        ("shop", "0005_alter_size_slug"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='order',
+            name="order",
             options={},
         ),
         migrations.RemoveField(
-            model_name='order',
-            name='address',
+            model_name="order",
+            name="address",
         ),
         migrations.RemoveField(
-            model_name='order',
-            name='is_paid',
+            model_name="order",
+            name="is_paid",
         ),
         migrations.AddField(
-            model_name='order',
-            name='branch',
-            field=models.CharField(default='', max_length=255),
+            model_name="order",
+            name="branch",
+            field=models.CharField(default="", max_length=255),
         ),
         migrations.AddField(
-            model_name='order',
-            name='city',
-            field=models.CharField(default='', max_length=100),
+            model_name="order",
+            name="city",
+            field=models.CharField(default="", max_length=100),
         ),
         migrations.AddField(
-            model_name='order',
-            name='payment_method',
-            field=models.CharField(default='cash', max_length=50),
+            model_name="order",
+            name="payment_method",
+            field=models.CharField(default="cash", max_length=50),
         ),
         migrations.AddField(
-            model_name='order',
-            name='promo_code',
+            model_name="order",
+            name="promo_code",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='created_at',
+            model_name="order",
+            name="created_at",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='full_name',
-            field=models.CharField(default='', max_length=255),
+            model_name="order",
+            name="full_name",
+            field=models.CharField(default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='phone',
-            field=models.CharField(default='', max_length=20),
+            model_name="order",
+            name="phone",
+            field=models.CharField(default="", max_length=20),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='status',
-            field=models.CharField(default='Pending', max_length=50),
+            model_name="order",
+            name="status",
+            field=models.CharField(default="Pending", max_length=50),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='total_price',
-            field=models.DecimalField(decimal_places=2, default=0, max_digits=10),
+            model_name="order",
+            name="total_price",
+            field=models.DecimalField(
+                decimal_places=2, default=0, max_digits=10
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="order",
+            name="user",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='order',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='orders.order'),
+            model_name="orderitem",
+            name="order",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="items",
+                to="orders.order",
+            ),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='price',
+            model_name="orderitem",
+            name="price",
             field=models.DecimalField(decimal_places=2, max_digits=10),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='shop.product'),
+            model_name="orderitem",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="shop.product"
+            ),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='quantity',
+            model_name="orderitem",
+            name="quantity",
             field=models.PositiveIntegerField(default=1),
         ),
     ]

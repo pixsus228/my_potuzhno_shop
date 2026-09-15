@@ -5,21 +5,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('orders', '0006_order_is_paid'),
-        ('shop', '0005_alter_size_slug'),
+        ("orders", "0006_order_is_paid"),
+        ("shop", "0005_alter_size_slug"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='orderitem',
-            name='product_name',
-            field=models.CharField(blank=True, default='', max_length=255),
+            model_name="orderitem",
+            name="product_name",
+            field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name='orderitem',
-            name='product',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='shop.product'),
+            model_name="orderitem",
+            name="product",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="shop.product",
+            ),
         ),
     ]

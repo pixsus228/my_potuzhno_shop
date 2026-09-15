@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop', '0004_populate_size_slugs'),
+        ("shop", "0004_populate_size_slugs"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='size',
-            name='slug',
-            field=models.SlugField(blank=True, unique=True, verbose_name='Слаг'),
+            model_name="size",
+            name="slug",
+            field=models.SlugField(
+                blank=True, unique=True, verbose_name="Слаг"
+            ),
         ),
     ]

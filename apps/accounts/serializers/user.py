@@ -5,11 +5,12 @@ from apps.accounts.models import Profile
 
 
 class UserSerializer(serializers.ModelSerializer):
-    phone = serializers.CharField(source='profile.phone', read_only=True)
+    phone = serializers.CharField(source="profile.phone", read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'email', 'phone']
+        fields = ["id", "first_name", "email", "phone"]
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(required=True)
@@ -17,11 +18,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['phone', 'password', 'first_name']
+        fields = ["phone", "password", "first_name"]
 
     def create(self, validated_data):
-        phone = validated_data.pop('phone')
+        phone = validated_data.pop("phone")
         user = User.objects.create_user(username=phone, **validated_data)
         Profile.objects.create(user=user, phone=phone)
         return user
-
