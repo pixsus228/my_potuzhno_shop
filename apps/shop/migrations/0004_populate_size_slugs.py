@@ -4,10 +4,8 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop', '0003_alter_size_options_size_slug_alter_size_name_and_more'),
+        ("shop", "0003_alter_size_options_size_slug_alter_size_name_and_more"),
     ]
 
-    operations = [
-    ]
+    operations = []

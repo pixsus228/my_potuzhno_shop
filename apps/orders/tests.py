@@ -1,6 +1,7 @@
 import pytest
 from apps.orders.models import Order
 
+
 @pytest.mark.django_db
 def test_create_order():
     order = Order.objects.create(
@@ -8,7 +9,7 @@ def test_create_order():
         full_name="Максим Потужний",
         address="м. Київ, вул. Хрещатик, 1",
         phone="+380991112233",
-        total_price=1500.00
+        total_price=1500.00,
     )
     assert order.id is not None
     assert order.total_price == 1500.00
@@ -22,7 +23,9 @@ def test_order_item_snapshot_and_set_null():
     from apps.orders.models import Order, OrderItem
 
     cat = Category.objects.create(name="Штани", slug="pants-cat")
-    product = Product.objects.create(name="Карго", price=Decimal("1500.00"), category=cat, stock=5)
+    product = Product.objects.create(
+        name="Карго", price=Decimal("1500.00"), category=cat, stock=5
+    )
     order = Order.objects.create(total_price=Decimal("3000.00"))
     item = OrderItem.objects.create(order=order, product=product, quantity=2)
 

@@ -1,22 +1,34 @@
-﻿import graphene
+import graphene
 from graphene_django import DjangoObjectType
 from apps.shop.models import Product, Category
 from apps.orders.models import Order
 
+
 class ProductType(DjangoObjectType):
     class Meta:
         model = Product
-        fields = ("id", "name", "slug", "description", "price", "category", "created_at")
+        fields = (
+            "id",
+            "name",
+            "slug",
+            "description",
+            "price",
+            "category",
+            "created_at",
+        )
+
 
 class CategoryType(DjangoObjectType):
     class Meta:
         model = Category
         fields = ("id", "name", "slug", "products")
 
+
 class OrderType(DjangoObjectType):
     class Meta:
         model = Order
         fields = ("id", "user", "created_at", "total_price", "phone", "items")
+
 
 class Query(graphene.ObjectType):
     all_products = graphene.List(ProductType)
@@ -38,5 +50,6 @@ class Query(graphene.ObjectType):
 
     def resolve_all_orders(self, info):
         return Order.objects.all()
+
 
 schema = graphene.Schema(query=Query)

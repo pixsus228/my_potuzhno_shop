@@ -1,4 +1,4 @@
-app_name = 'shop'
+app_name = "shop"
 from django.urls import path
 from .views import (
     HomeView,
@@ -11,9 +11,8 @@ from .views import (
     product_update,
     product_delete,
     review_delete,
-    review_update
+    review_update,
 )
-
 
 
 urlpatterns = [
