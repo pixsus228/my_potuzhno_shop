@@ -14,6 +14,18 @@ class Order(models.Model):
     full_name = models.CharField(max_length=255, verbose_name="ПІБ")
     phone = models.CharField(max_length=20, verbose_name="Телефон")
     address = models.TextField(verbose_name="Адреса доставки")
+    city = models.CharField(
+        max_length=100, blank=True, default="", verbose_name="Місто"
+    )
+    branch = models.CharField(
+        max_length=100, blank=True, default="", verbose_name="Відділення пошти"
+    )
+    payment_method = models.CharField(
+        max_length=50, blank=True, default="cash", verbose_name="Спосіб оплати"
+    )
+    promo_code = models.CharField(
+        max_length=50, blank=True, default="", verbose_name="Промокод"
+    )
     total_price = models.DecimalField(
         max_digits=10, decimal_places=2, default=0, verbose_name="Загальна сума"
     )
@@ -45,7 +57,6 @@ class OrderItem(models.Model):
     )
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна")
     quantity = models.PositiveIntegerField(default=1, verbose_name="Кількість")
-    # додав знімок назви товару для збереження історії
     product_name = models.CharField(
         max_length=255, blank=True, default="", verbose_name="Назва товару (знімок)"
     )
